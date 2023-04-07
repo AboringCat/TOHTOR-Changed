@@ -32,21 +32,19 @@ namespace TownOfHost
             Logger.Info(text, "SendChat");
             switch (args[0])
             {
+                case "/dump":
+                    if (GameStates.IsLobby)
+                    {
+                        canceled = true;
+                        Utils.DumpLog();
+                    }
+                    break;
+                
                 case "/say":
                 case "/s":
                     canceled = true;
                     if (args.Length > 1)
                         Utils.SendMessage(args.Skip(1).Join(delimiter: " "), title: $"<color=#ff0000>{GetString("MessageFromTheHost")}</color>");
-                    break;
-
-                case "/hn":
-                case "/hidename":
-                    canceled = true;
-                    Main.HideName.Value = args.Length > 1 ? args.Skip(1).Join(delimiter: " ") : Main.HideName.DefaultValue.ToString();
-                    GameStartManagerPatch.GameStartManagerStartPatch.HideName.text =
-                        ColorUtility.TryParseHtmlString(Main.HideColor.Value, out _)
-                            ? $"<color={Main.HideColor.Value}>{Main.HideName.Value}</color>"
-                            : $"<color={Main.ModColor}>{Main.HideName.Value}</color>";
                     break;
 
                 case "/xf":
@@ -65,13 +63,7 @@ namespace TownOfHost
                     Utils.SendMessage(GetString("Message.TryFixName"), PlayerControl.LocalPlayer.PlayerId);
                     break;
 
-                case "/dump":
-                    if (GameStates.IsLobby)
-                    {
-                        canceled = true;
-                        Utils.DumpLog();
-                    }
-                    break;
+
                 case "/v":
                 case "/version":
                     canceled = true;
